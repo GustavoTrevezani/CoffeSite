@@ -1,13 +1,19 @@
 // Serviço de usuários: funções que acessam o modelo para buscar dados
-import coffeeModel from "../models/coffeeModel.js";
+// import coffeeModel from "../models/coffeeModel.js";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-function getCoffees() {
-    return coffeeModel.findAll();
+async function getCoffees() {
+    return await prisma.coffee.findMany();
 }
 
-function getCoffee(id) {
-    return coffeeModel.findById(id);
+async function getCoffee(id) {
+    return await prisma.coffee.findUnique(id);
 }
 
-const coffeeService = { getCoffees, getCoffee };
+async function createCoffee(coffeeData) {
+    return await prisma.coffee.create({ data: coffeeData });
+}
+
+const coffeeService = { getCoffees, getCoffee, createCoffee };
 export default coffeeService;

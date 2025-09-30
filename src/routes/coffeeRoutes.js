@@ -5,5 +5,5 @@ import coffeeController from "../controllers/coffeeController.js";
 
 router.get("/", coffeeController.getAllCoffees);
 router.get("/:id", coffeeController.getCoffeeById);
-
+router.post("/", coffeeController.postCoffee);
 export default router;

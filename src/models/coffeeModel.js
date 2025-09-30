@@ -1,4 +1,5 @@
 // Modelo de usuários: dados fictícios e funções de consulta
+// NÃO UTILIZADO MAIS, SUBSTITUÍDO PELO PRISMA
 const coffee = [
     {
         id: 1,
@@ -49,6 +50,32 @@ function findById(id) {
     return coffee.find((coffee) => coffee.id === id);
 }
 
-const coffeeModel = { findAll, findById };
+function create(newCoffee) {
+    if (
+        !newCoffee.name ||
+        !newCoffee.price ||
+        !newCoffee.description ||
+        !newCoffee.size ||
+        !newCoffee.category
+    ) {
+        throw new Error("Nome e preço são obrigatórios");
+    }
+    const id = coffee.length ? coffee[coffee.length - 1].id + 1 : 1;
+    const coffeeWithId = {
+        id,
+        ...newCoffee,
+        created_at: new Date(),
+        updated_at: new Date(),
+    };
+    coffee.push(coffeeWithId);
+    return coffeeWithId;
+}
 
-export default coffeeModel;
+function update(id, updatedCoffee) {
+    const coffeeToUpdate = coffee.find((coffee) => coffee.id === id);
+    if (!coffeeToUpdate) {
+        throw new Error("Café não encontrado");
+    }
+}
+
+const coffeeModel = { findAll, findById, create };
