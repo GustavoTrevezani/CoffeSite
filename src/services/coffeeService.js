@@ -22,5 +22,15 @@ async function updateCoffee(id, coffeeData) {
     });
 }
 
-const coffeeService = { getCoffees, getCoffee, createCoffee, updateCoffee };
+async function removeCoffee(id) {
+    return await prisma.coffee.delete({ where: { id } });
+}
+
+const coffeeService = {
+    getCoffees,
+    getCoffee,
+    createCoffee,
+    updateCoffee,
+    removeCoffee,
+};
 export default coffeeService;

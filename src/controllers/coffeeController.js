@@ -30,10 +30,21 @@ async function putCoffee(req, res) {
     res.status(200).json(updatedCoffee);
 }
 
+async function deleteCoffee(req, res) {
+    const id = Number(req.params.id);
+    const existCoffee = await coffeeService.getCoffee(id);
+    if (!existCoffee) {
+        return res.status(404).json({ message: "coffee not found" });
+    }
+    const removedCoffee = await coffeeService.removeCoffee(id);
+    res.status(200).json(removedCoffee);
+}
+
 const coffeeController = {
     getAllCoffees,
     getCoffeeById,
     postCoffee,
     putCoffee,
+    deleteCoffee,
 };
 export default coffeeController;

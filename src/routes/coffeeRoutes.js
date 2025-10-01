@@ -7,4 +7,5 @@ router.get("/", coffeeController.getAllCoffees);
 router.get("/:id", coffeeController.getCoffeeById);
 router.post("/", coffeeController.postCoffee);
 router.put("/:id", coffeeController.putCoffee);
+router.delete("/:id", coffeeController.deleteCoffee);
 export default router;
