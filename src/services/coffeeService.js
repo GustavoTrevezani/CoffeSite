@@ -8,12 +8,19 @@ async function getCoffees() {
 }
 
 async function getCoffee(id) {
-    return await prisma.coffee.findUnique(id);
+    return await prisma.coffee.findUnique({ where: { id } });
 }
 
 async function createCoffee(coffeeData) {
     return await prisma.coffee.create({ data: coffeeData });
 }
 
-const coffeeService = { getCoffees, getCoffee, createCoffee };
+async function updateCoffee(id, coffeeData) {
+    return await prisma.coffee.update({
+        where: { id },
+        data: coffeeData,
+    });
+}
+
+const coffeeService = { getCoffees, getCoffee, createCoffee, updateCoffee };
 export default coffeeService;
