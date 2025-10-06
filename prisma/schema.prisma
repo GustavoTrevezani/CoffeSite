@@ -37,8 +37,6 @@ model Coffee {
   available   Boolean  @default(true)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-
-  Order Order[]
 }
 
 model Food {
@@ -72,16 +70,12 @@ model Drinks {
 model Order {
   id          Int      @id @default(autoincrement())
   userId      Int
-  coffeeId    Int
-  quantity    Int      @default(1)
   totalPrice  Float
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
   // Relations
   user   User   @relation(fields: [userId], references: [id])
-  coffee Coffee @relation(fields: [coffeeId], references: [id])
-
   OrderItem OrderItens[]
 }
 
