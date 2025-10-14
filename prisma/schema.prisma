@@ -32,6 +32,7 @@ model Coffee {
   description String
   size        String
   category    CoffeeCategory
+  points      Int     @default(1)
   ingredients String
   image_url   String
   available   Boolean  @default(true)
@@ -45,6 +46,7 @@ model Food {
   price       Float
   description String
   category    String          // "sweet" or "savory"
+  points      Int     @default(1)
   ingredients String          
   filling     String?         
   image_url   String
@@ -60,6 +62,7 @@ model Drinks {
   description String
   size        String
   category    String      // Ex: "water", "soda", "juice"
+  points      Int     @default(1)
   ingredients String?
   image_url   String
   available   Boolean  @default(true)
