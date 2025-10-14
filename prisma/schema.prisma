@@ -25,6 +25,13 @@ model User {
   Order Order[]
 }
 
+model categoryPoints {
+  id        Int       @id @default(autoincrement())
+  category  String    @unique
+  points    Float
+  updateAt  DateTime  @updatedAt
+}
+
 model Coffee {
   id          Int      @id @default(autoincrement())
   name        String
