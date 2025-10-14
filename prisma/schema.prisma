@@ -67,10 +67,23 @@ model Drinks {
   updated_at  DateTime @updatedAt
 }
 
+enum OrderStatus {
+  OPEN      // Order CREATED, items can be added or removed
+  SENT      // Order Sent to the kitchen to be prepared. Cannot add or remove anything
+  COMPLETED // Order Completed (client received it or the system finished it), but not paid yet.
+  CANCELED  // Order canceled 
+}
+
+enum PaymentStatus {
+  PENDING   // Payment not received
+  PAID      // Payment received
+}
 model Order {
   id          Int      @id @default(autoincrement())
   userId      Int
   totalPrice  Float
+  status      OrderStatus @default(OPEN)
+  payment     PaymentStatus @default(PENDING)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
