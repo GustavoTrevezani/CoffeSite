@@ -62,7 +62,7 @@ async function createOrder(orderData) {
             productId,
             productType,
             quantity,
-            price, // gravamos o preço atual do produto para histórico
+            price,
         });
     }
 
@@ -70,6 +70,8 @@ async function createOrder(orderData) {
         data: {
             user: { connect: { id: userId } },
             totalPrice,
+            status: "OPEN",
+            payment: "PENDING",
             OrderItem: { create: orderItemsData },
         },
         include: {
@@ -79,6 +81,31 @@ async function createOrder(orderData) {
     });
 
     return order;
+}
+
+async function sendOrder(id) {
+    const order = await prisma.order.findUnique({ where: { id: id } });
+    if (!order) {
+        throw new Error("Order not exist");
+    }
+
+    if (order.status !== "OPEN") {
+        throw new Error("Only open orders can be sent!");
+    }
+
+    const emptyOrder = await prisma.orderItens.findMany({
+        where: { orderId: id },
+    });
+    if (emptyOrder.length === 0) {
+        throw new Error("Cannot send an empty order");
+    }
+    const sendedOrder = await prisma.order.update({
+        where: { id },
+        data: { status: "SENT" },
+        include: { user: true, OrderItem: true },
+    });
+
+    return sendedOrder;
 }
 
 async function updateOrder(id, orderData) {
@@ -114,6 +141,7 @@ const orderService = {
     createOrder,
     updateOrder,
     removeOrder,
+    sendOrder,
 };
 
 export default orderService;

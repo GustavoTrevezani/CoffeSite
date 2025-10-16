@@ -29,6 +29,30 @@ async function postOrder(req, res) {
     res.status(201).json(newOrder);
 }
 
+async function sendOrder(req, res) {
+    const id = Number(req.params.id);
+    if (!id) {
+        return res.status(404).json({ message: "Order not found" });
+    }
+
+    const order = await orderService.getOrder(id);
+
+    if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (!order.OrderItem || order.OrderItem.length === 0) {
+        return res.status(400).json({ message: "Order is empty" });
+    }
+
+    if (order.status !== "OPEN") {
+        return res.status(400).json({ message: "Order must be OPEN to send" });
+    }
+
+    const sendedOrder = await orderService.sendOrder(id);
+    res.status(200).json(sendedOrder);
+}
+
 async function putOrder(req, res) {
     const id = Number(req.params.id);
     if (!id) {
@@ -36,7 +60,7 @@ async function putOrder(req, res) {
     }
     const dataOrder = req.body;
     const updatedOrder = await orderService.updateOrder(id, dataOrder);
-    res.jso(updatedOrder);
+    res.json(updatedOrder);
 }
 
 async function deleteOrder(req, res) {
@@ -52,6 +76,7 @@ const orderController = {
     getAllOrders,
     getOrderById,
     postOrder,
+    sendOrder,
     putOrder,
     deleteOrder,
 };
