@@ -4,6 +4,16 @@ const prisma = new PrismaClient();
 async function addItemToOrder(orderId, product) {
     const { productId, productType, quantity } = product;
 
+    const orderExist = await prisma.order.findUnique({
+        where: { id: orderId },
+    });
+    if (!orderExist) {
+        throw new Error("Order does not exist");
+    }
+    if (orderExist.status !== "OPEN") {
+        throw new Error("Cannot add items to a closed/completed order");
+    }
+
     let dbProduct;
 
     const type = productType.toLowerCase();
@@ -54,6 +64,17 @@ async function addItemToOrder(orderId, product) {
 
 async function removeOrderItem(orderId, product) {
     const { productId, productType, quantity = 1 } = product;
+
+    const orderExist = await prisma.order.findUnique({
+        where: { id: orderId },
+    });
+    if (!orderExist) {
+        throw new Error("Order does not exist");
+    }
+
+    if (orderExist.status !== "OPEN") {
+        throw new Error("Cannot remove items to a closed/completed order");
+    }
 
     const orderItem = await prisma.orderItens.findFirst({
         where: { orderId, productId, productType },
