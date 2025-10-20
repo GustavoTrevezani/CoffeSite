@@ -63,6 +63,17 @@ async function putOrder(req, res) {
     res.json(updatedOrder);
 }
 
+async function patchChangeOrderStatus(req, res) {
+    const orderId = Number(req.params.id);
+    const { status } = req.body;
+    if (!orderId) {
+        res.status(404).json({ message: "Order not found" });
+    }
+
+    const updateStatus = await orderService.updateOrderStatus(orderId, status);
+    return res.json(updateStatus);
+}
+
 async function deleteOrder(req, res) {
     const id = Number(req.params.id);
     if (!id) {
@@ -78,6 +89,7 @@ const orderController = {
     postOrder,
     sendOrder,
     putOrder,
+    patchChangeOrderStatus,
     deleteOrder,
 };
 

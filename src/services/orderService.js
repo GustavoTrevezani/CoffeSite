@@ -122,6 +122,30 @@ async function updateOrder(id, orderData) {
     return updatedOrder;
 }
 
+async function updateOrderStatus(orderId, newStatus) {
+    const order = await prisma.order.findUnique({ where: { id: orderId } });
+    if (!order) {
+        throw new Error("Order not exist");
+    }
+
+    const validTransition = {
+        OPEN: ["SENT", "CANCELED"],
+        SENT: ["COMPLETED"],
+    };
+
+    const currentAllowed = validTransition[order.status] || [];
+    if (!currentAllowed.includes(newStatus)) {
+        throw new Error(
+            `Cannot change order from ${order.status} to ${newStatus}`
+        );
+    }
+
+    return prisma.order.update({
+        where: { id: orderId },
+        data: { status: newStatus },
+    });
+}
+
 async function removeOrder(id) {
     const order = await prisma.order.findUnique({ where: { id } });
     if (!order) {
@@ -140,6 +164,7 @@ const orderService = {
     getOrders,
     createOrder,
     updateOrder,
+    updateOrderStatus,
     removeOrder,
     sendOrder,
 };
