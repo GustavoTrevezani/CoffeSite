@@ -21,6 +21,7 @@ export default function AdminPage() {
     // 🔥 CREATE PRODUCT (BACKEND)
     // -------------------------
     async function handleAddProduct(productData: Product) {
+        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
         try {
             const endpointMap = {
                 coffee: "/coffee",
@@ -41,7 +42,7 @@ export default function AdminPage() {
                 ingredients: ingredientsAsString,
             };
 
-            const res = await fetch(`http://localhost:3000${endpoint}`, {
+            const res = await fetch(`${BASE_URL}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataForPrisma), // ✔ AGORA VAI!
@@ -61,19 +62,22 @@ export default function AdminPage() {
     // 🔥 DELETE PRODUCT (BACKEND)
     // -------------------------
     async function handleDeleteProduct(productId: number) {
+        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
         try {
-            const res = await fetch(
-                `http://localhost:3000/coffee/${products}`,
-                {
-                    method: "DELETE",
-                }
-            );
+            const res = await fetch(`${BASE_URL}/coffee/${productId}`, {
+                method: "DELETE",
+            });
 
-            if (!res.ok) throw new Error("Erro ao deletar produto");
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => null);
+                throw new Error(
+                    errorData?.message || "Erro ao deletar produto"
+                );
+            }
 
             queryClient.invalidateQueries({ queryKey: ["all-products"] });
         } catch (error) {
-            console.error(error);
+            console.error("Delete error:", error);
         }
     }
 
